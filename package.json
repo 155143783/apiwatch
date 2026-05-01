@@ -1,0 +1,18 @@
+{
+  "name": "apiwatch",
+  "version": "1.0.0",
+  "description": "API健康监控服务 - 简洁高效的API可用性监控解决方案",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Run npm start to launch the server\""
+  },
+  "keywords": ["api", "monitoring", "health-check", "uptime"],
+  "author": "155143783",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^12.9.0",
+    "express": "^5.2.1",
+    "node-cron": "^4.2.1"
+  }
+}

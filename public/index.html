@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APIWatch - API健康监控服务</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">📡</span>
+        <h1>APIWatch</h1>
+      </div>
+      <div class="header-actions">
+        <span class="tier-badge free">Free</span>
+        <button id="addEndpointBtn" class="btn btn-primary">+ 添加端点</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 统计概览 -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🌐</div>
+        <div class="stat-content">
+          <div class="stat-value" id="totalEndpoints">0</div>
+          <div class="stat-label">监控端点</div>
+        </div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-icon">✓</div>
+        <div class="stat-content">
+          <div class="stat-value" id="healthyCount">0</div>
+          <div class="stat-label">健康</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <div class="stat-value" id="avgUptime">100%</div>
+          <div class="stat-label">平均可用率</div>
+        </div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-icon">⚠</div>
+        <div class="stat-content">
+          <div class="stat-value" id="failureCount">0</div>
+          <div class="stat-label">近期故障</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 端点列表 -->
+    <section class="endpoints-section">
+      <h2>监控端点</h2>
+      <div id="endpointsList" class="endpoints-list">
+        <div class="loading">加载中...</div>
+      </div>
+    </section>
+
+    <!-- 响应时间图表 -->
+    <section class="chart-section">
+      <h2>响应时间趋势 (最近24小时)</h2>
+      <div id="chartContainer" class="chart-container">
+        <canvas id="responseTimeChart"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <!-- 添加/编辑端点弹窗 -->
+  <div id="endpointModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">添加端点</h3>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="endpointForm">
+        <input type="hidden" id="endpointId">
+        <div class="form-group">
+          <label for="endpointName">名称</label>
+          <input type="text" id="endpointName" placeholder="我的API" required>
+        </div>
+        <div class="form-group">
+          <label for="endpointUrl">URL</label>
+          <input type="url" id="endpointUrl" placeholder="https://api.example.com/health" required>
+        </div>
+        <div class="form-group">
+          <label for="intervalMinutes">检测间隔 (分钟)</label>
+          <select id="intervalMinutes">
+            <option value="1">1分钟 (Pro)</option>
+            <option value="5" selected>5分钟</option>
+            <option value="10">10分钟</option>
+            <option value="30">30分钟</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+          <button type="submit" class="btn btn-primary">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 端点详情弹窗 -->
+  <div id="detailModal" class="modal">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3 id="detailTitle">端点详情</h3>
+        <button class="close-btn" onclick="closeDetailModal()">&times;</button>
+      </div>
+      <div id="detailContent" class="detail-content">
+        <div class="loading">加载中...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 升级提示弹窗 -->
+  <div id="upgradeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>升级到 Pro</h3>
+        <button class="close-btn" onclick="closeUpgradeModal()">&times;</button>
+      </div>
+      <div class="upgrade-content">
+        <div class="pricing-table">
+          <div class="pricing-card">
+            <div class="pricing-header">
+              <span class="pricing-tier">Free</span>
+              <span class="pricing-price">$0</span>
+            </div>
+            <ul class="pricing-features">
+              <li>✓ 3个端点</li>
+              <li>✓ 5分钟检测间隔</li>
+              <li>✓ 基础统计</li>
+            </ul>
+          </div>
+          <div class="pricing-card featured">
+            <div class="pricing-header">
+              <span class="pricing-tier">Pro</span>
+              <span class="pricing-price">$9/月</span>
+            </div>
+            <ul class="pricing-features">
+              <li>✓ 20个端点</li>
+              <li>✓ 1分钟检测间隔</li>
+              <li>✓ 邮件告警</li>
+              <li>✓ 详细数据分析</li>
+            </ul>
+            <button class="btn btn-primary">即将推出</button>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-header">
+              <span class="pricing-tier">Enterprise</span>
+              <span class="pricing-price">$49/月</span>
+            </div>
+            <ul class="pricing-features">
+              <li>✓ 无限端点</li>
+              <li>✓ 30秒检测间隔</li>
+              <li>✓ Webhook告警</li>
+              <li>✓ 优先支持</li>
+            </ul>
+            <button class="btn btn-secondary">即将推出</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>APIWatch - 您的API健康监控专家 | <a href="/api/dashboard">API</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
