@@ -1,23 +1,21 @@
-# APIWatch - Examples
+# APIWatch Examples
 
-## Usage
+Quick start examples for APIWatch.
 
+## Python
 ```bash
-python3 examples/python-client.py
-node examples/node-client.js
-bash examples/curl-examples.sh
+pip install requests && python python-monitor.py
 ```
 
-## Endpoints
+## curl
+```bash
+bash curl-examples.sh
+```
 
-- `GET /status` - Overall monitoring status
-- `GET /check/<service>` - Check specific API health
-- `GET /metrics/<service>` - Response time metrics
-- `GET /alerts` - Active alerts
-
-## Features
-
-- Uptime monitoring
-- Response time tracking
-- x402 paid endpoint support
-- Alert configuration
+## API Endpoints
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Health check |
+| `/api/endpoints` | GET/POST | List/Add endpoints |
+| `/api/status` | GET | Monitoring status |
+| `/api/alerts` | GET | Recent alerts |
