@@ -174,3 +174,13 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 **Made with ❤️ for developers**
 
 </div>
+
+
+## 🌐 Live Demo
+
+- **Health Check**: [https://carey-omaha-resume-kitty.trycloudflare.com/health](https://carey-omaha-resume-kitty.trycloudflare.com/health)
+
+## 📰 Blog
+
+- [MCP + x402: Building Paid API Services from Zero to One](https://155143783.github.io/posts/mcp-x402-paid-api.html)
+
